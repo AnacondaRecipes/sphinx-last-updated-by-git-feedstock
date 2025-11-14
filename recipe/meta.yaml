@@ -1,0 +1,52 @@
+{% set name = "sphinx-last-updated-by-git" %}
+{% set version = "0.3.8" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_')}}-{{ version }}.tar.gz
+  sha256: c145011f4609d841805b69a9300099fc02fed8f5bb9e5bcef77d97aea97b7761
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation --disable-pip-version-check
+  skip: true  # [py<37]
+
+requirements:
+  host:
+    - pip
+    - python
+    - setuptools >=40.8.0
+    - wheel
+  run:
+    - python
+    - sphinx >=1.8
+
+# Tests disabled, all of them need a .git folder, which is removed from the PyPI and GitHub release tarballs.
+test:
+  imports:
+    - sphinx_last_updated_by_git
+  commands:
+    - pip check
+  requires:
+    - pip
+
+about:
+  home: https://github.com/mgeier/sphinx-last-updated-by-git
+  summary: Get the "last updated" time for each Sphinx page from Git
+  license: BSD-2-Clause
+  license_family: BSD
+  license_file: LICENSE
+  description: |
+    This is a little Sphinx extension that does exactly that. It also checks for included files
+    and other dependencies and uses their “last updated” time if it’s more recent. For each file,
+    the “author date” of the Git commit where it was last changed is taken to be its “last updated” time.
+    Uncommitted changes are ignored.
+  dev_url: https://github.com/mgeier/sphinx-last-updated-by-git
+  doc_url: https://github.com/mgeier/sphinx-last-updated-by-git/blob/master/README.rst
+  
+extra:
+  recipe-maintainers:
+    - aosipov
